@@ -37,10 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
     e.preventDefault();
     const task = input.value.trim();
     if (task) {
-        // TODO: write code to take the `task` and add it to the `list` variable defined at the top
+        //list.innerText += task; first implementation 
+        addTodo(task);
     }
     updateAllCounters();
-  });
+  }); 
 
   // Event: Clear completed
   clearBtn.addEventListener('click', function() {
@@ -83,14 +84,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Mark a todo item as completed
   function markAsComplete(todoItem) {
-    // TODO: Toggle the 'completed' class on todoItem
-    // Hit: if (todoItem.classList.contains('completed')) { ... }
+    if (todoItem.classList.contains('completed')) {
+      todoItem.classList.remove('completed');
+    } else {
+      todoItem.classList.add('completed');
+    }
   }
 
   // Remove all completed tasks from the list
   function clearCompleted() {
-    // TODO: Remove all items with the 'completed' class from the list
-    // Hit: Use a loop to check each child of the list constant at the top of the document
+    for (let i = list.children.length - 1; i >= 0; i--) {
+      const todoItem = list.children[i];
+      if (todoItem.classList.contains('completed')) {
+        list.removeChild(todoItem);
+      }
+    }
   }
 
   // Show/hide the clear completed button
@@ -108,15 +116,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Count and display the number of todos
   function updateTodoCount() {
-    // TODO: Count how many todo items are in the list
-    // Hint: count the todos using a for each loop and save it in a variable x. Then use the below code to set the todoCount counter
-    // Set todoCount.textContent = 'Todos: ' + x;
+    let x = 0;
+    for (let i = 0; i < list.children.length; i++) {
+      x++;
+    }
+    todoCount.textContent = 'Todos: ' + x;
   }
 
   // Count and display the number of completed todos
   function updateCompletedCount() {
-    // TODO: Count how many todo items have the 'completed' class
-    // Set completedCount.textContent = 'Completed: Y';
+    let y = 0;
+    for (let i = 0; i < list.children.length; i++) {
+      if (list.children[i].classList.contains('completed')) {
+        y++;
+      }
+    }
+    completedCount.textContent = 'Completed: ' + y;
   }
 
   // Show a message if there are no todos left
