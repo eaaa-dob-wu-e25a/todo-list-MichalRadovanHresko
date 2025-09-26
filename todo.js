@@ -136,8 +136,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Show a message if there are no todos left
   function updateNoTodosMessage() {
-    // TODO: If there are no todos, show a message (e.g. 'No todos left!')
-    // You can use todoCount.textContent for this, or create a new element
+    // Clear any existing message first
+    const existingMessage = document.querySelector('.noTask-text');
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+
+    // Check if there are no todos (use === for comparison, not =)
+    if (list.children.length === 0) {
+      const noTask = document.createElement('p');
+      noTask.textContent = 'There are no tasks left!'; // Missing quotes
+      noTask.className = 'noTask-text';
+      list.appendChild(noTask); // Actually add the element to the DOM
+    }
   }
 
   /**
