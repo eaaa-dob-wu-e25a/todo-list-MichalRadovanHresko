@@ -136,18 +136,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Show a message if there are no todos left
   function updateNoTodosMessage() {
-    // Clear any existing message first
-    const existingMessage = document.querySelector('.noTask-text');
-    if (existingMessage) {
-      existingMessage.remove();
-    }
-
     // Check if there are no todos (use === for comparison, not =)
     if (list.children.length === 0) {
       const noTask = document.createElement('p');
-      noTask.textContent = 'There are no tasks left!'; // Missing quotes
+      noTask.textContent = 'There are no tasks left!';
       noTask.className = 'noTask-text';
-      list.appendChild(noTask); // Actually add the element to the DOM
+      list.appendChild(noTask); 
     }
   }
 
@@ -156,16 +150,82 @@ document.addEventListener('DOMContentLoaded', function() {
    * @param {HTMLElement} todoItem - The todo item to edit
    */
   function editTodo(todoItem) {
-    // TODO: Allow editing the todo text
-    // Hint: Use an input field and save changes on Enter
-    // Use if statements to check for events
+    const taskText = todoItem.querySelector('.task-text');
+    const currentText = taskText.textContent;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentText;
+    input.className = 'edit-input';
+    todoItem.replaceChild(input, taskText);
+    input.focus();
+    input.select();
+    
+
+    input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const newText = input.value.trim();
+        if (newText) {
+          const newTaskText = document.createElement('span');
+          newTaskText.textContent = newText;
+          newTaskText.className = 'task-text';
+          todoItem.replaceChild(newTaskText, input);
+          
+          newTaskText.addEventListener('click', function() {
+            markAsComplete(todoItem);
+            updateClearButton();
+            updateAllCounters();
+          });
+          newTaskText.ondblclick = function() {
+            editTodo(todoItem);
+          };
+        } else {
+          todoItem.replaceChild(taskText, input);
+        }
+      }
+    });
+    
+    input.addEventListener('blur', function() {
+      const newText = input.value.trim();
+      if (newText) {
+        const newTaskText = document.createElement('span');
+        newTaskText.textContent = newText;
+        newTaskText.className = 'task-text';
+        todoItem.replaceChild(newTaskText, input);
+        
+        newTaskText.addEventListener('click', function() {
+          markAsComplete(todoItem);
+          updateClearButton();
+          updateAllCounters();
+        });
+        newTaskText.ondblclick = function() {
+          editTodo(todoItem);
+        };
+      } else {
+        todoItem.replaceChild(taskText, input);
+      }
+    });
   }
 
-  /**
-   * Toggles all todos as completed or not completed
-   */
   function toggleAllComplete() {
-    // TODO: Use a loop to go through all todo items
-    // Use if statements to check and toggle the 'completed' class
+    let allCompleted = true;
+    for (let i = 0; i < list.children.length; i++) {
+      const todoItem = list.children[i];
+      if (!todoItem.classList.contains('noTask-text')) {
+        if (!todoItem.classList.contains('completed')) {
+          allCompleted = false;
+          break;
+        }
+      }
+    }
+    for (let i = 0; i < list.children.length; i++) {
+      const todoItem = list.children[i];
+      if (!todoItem.classList.contains('noTask-text')) {
+        if (allCompleted) {
+          todoItem.classList.remove('completed');
+        } else {
+          todoItem.classList.add('completed');
+        }
+      }
+    }
   }
 });
